@@ -7,7 +7,6 @@ import com.github.bidiu.flood.node.FloodNode;
 import com.github.bidiu.megamerge.common.LinkMessageManager;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
-import com.github.bidiu.megamerge.node.AbstractNode;
 import com.github.bidiu.megamerge.util.Logger;
 
 import jbotsim.Link;
@@ -96,9 +95,11 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	@Override
 	public void onLinkAdded(Link link) {
 		link.setProperty(MSG_MANAGER, new LinkMessageManager(link));
+		
+		// use (UUID, UUID) as weight of every link
 		List<String> weight = new ArrayList<>();
-		weight.add(((AbstractNode) link.endpoint(0)).getUuid());
-		weight.add(((AbstractNode) link.endpoint(1)).getUuid());
+		weight.add(link.endpoint(0).toString());
+		weight.add(link.endpoint(1).toString());
 		link.setProperty(WEIGHT, weight);
 	}
 

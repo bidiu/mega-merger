@@ -2,7 +2,7 @@ package com.github.bidiu.flood.msg;
 
 import java.awt.Color;
 
-import com.github.bidiu.megamerge.msg.AbstractMsgContent;
+import com.github.bidiu.megamerge.message.AbstractMsgContent;
 
 public class FloodMsgContent extends AbstractMsgContent {
 	

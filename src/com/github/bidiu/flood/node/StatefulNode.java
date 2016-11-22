@@ -1,9 +1,13 @@
-package com.github.bidiu.megamerge.node;
+package com.github.bidiu.flood.node;
 
 import static com.github.bidiu.megamerge.Bootstrap.MSG_MANAGER;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
+import com.github.bidiu.flood.common.State;
+import com.github.bidiu.flood.common.Stateful;
 import com.github.bidiu.megamerge.common.City;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.util.ColorUtils;
@@ -17,18 +21,41 @@ import jbotsim.Node;
  * @author sunhe
  * @date Nov 20, 2016
  */
-public abstract class AbstractNode extends Node {
+public abstract class StatefulNode extends Node implements Stateful {
+	
+	protected Map<String, State> allStates;
 	
 	protected String uuid = UUID.randomUUID().toString();
 	
-	private City city;
+	protected City city;
 	
-	public AbstractNode() {
-		// dummy
+	public StatefulNode(Map<String, State> allStates) {
+		this.allStates = allStates;
+		for (Entry<String, State> entry : allStates.entrySet()) {
+			if (entry.getValue().isInitial()) {
+				setCurState(entry.getValue());
+				break;
+			}
+		}
+		if (getState() == null) {
+			throw new IllegalStateException("node has no initial state assigned");
+		}
 	}
 	
-	public AbstractNode(City city) {
-		setCity(city);
+	@Override
+	public Map<String, State> getAllStates() {
+		return allStates;
+	}
+	
+	@Override
+	public State getCurState() {
+		return (State) getState();
+	}
+
+	@Override
+	public void setCurState(State state) {
+		setState(state);
+		setColor(state.getColor());
 	}
 
 	public String getUuid() {
@@ -92,10 +119,10 @@ public abstract class AbstractNode extends Node {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof AbstractNode)) {
+		if (!(obj instanceof StatefulNode)) {
 			return false;
 		}
-		AbstractNode other = (AbstractNode) obj;
+		StatefulNode other = (StatefulNode) obj;
 		if (uuid == null) {
 			if (other.uuid != null) {
 				return false;

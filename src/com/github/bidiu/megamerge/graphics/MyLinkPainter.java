@@ -9,7 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 
 import com.github.bidiu.megamerge.common.MessageManager;
-import com.github.bidiu.megamerge.msg.MessageContent;
+import com.github.bidiu.megamerge.message.MessageContent;
 
 import jbotsim.Link;
 import jbotsim.Message;

@@ -1,7 +1,5 @@
 package com.github.bidiu.flood.node;
 
-import static com.github.bidiu.megamerge.Bootstrap.logger;
-
 import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,7 +8,6 @@ import java.util.Map;
 
 import com.github.bidiu.flood.common.State;
 import com.github.bidiu.flood.msg.FloodMsgContent;
-import com.github.bidiu.megamerge.node.AbstractNode;
 
 import jbotsim.Message;
 import jbotsim.Node;
@@ -20,7 +17,7 @@ import jbotsim.Node;
  * @author sunhe
  * @date Nov 20, 2016
  */
-public class FloodNode extends AbstractNode {
+public class FloodNode extends StatefulNode {
 	
 	public static final Map<String, State> ALL_STATES;
 	
@@ -44,9 +41,7 @@ public class FloodNode extends AbstractNode {
 	public void onSelection() {
 		setCurState(allStates.get(STATE_INITIATOR));
 		mySendAll(new FloodMsgContent());
-		logger.log(this, "became initiator, broadcasted to all neighbors");
 		setCurState(allStates.get(STATE_DONE));
-		logger.log(this, "became done");
 	}
 	
 	@Override
@@ -63,9 +58,7 @@ public class FloodNode extends AbstractNode {
 				mySendTo(neighbor, msg);
 			}
 		}
-		logger.log(this, "received message, broadcasted to all neighbors but sender(" + sender + ")");
 		setCurState(allStates.get(STATE_DONE));
-		logger.log(this, "became done");
 	}
 	
 }

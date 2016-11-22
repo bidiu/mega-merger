@@ -1,4 +1,4 @@
-package com.github.bidiu.megamerge.msg;
+package com.github.bidiu.megamerge.message;
 
 import java.util.HashMap;
 import java.util.Map;

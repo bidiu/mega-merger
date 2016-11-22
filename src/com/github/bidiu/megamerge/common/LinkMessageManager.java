@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.bidiu.megamerge.msg.MessageContent;
+import com.github.bidiu.megamerge.message.MessageContent;
 
 import jbotsim.Link;
 import jbotsim.Message;
