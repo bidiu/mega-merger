@@ -1,9 +1,11 @@
-package com.github.bidiu.megamerge.msg;
+package com.github.bidiu.megamerge.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.github.bidiu.megamerge.msg.MessageContent;
 
 import jbotsim.Link;
 import jbotsim.Message;

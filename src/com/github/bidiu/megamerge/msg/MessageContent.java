@@ -4,7 +4,11 @@ import java.awt.Color;
 
 public interface MessageContent {
 	
-	public String getContent();
+	public String getInfo();
+	
+	public Object getProperty(String key);
+	
+	public void setProperty(String key, Object value);
 	
 	public Color getColor();
 	

@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.bidiu.flood.common.State;
 import com.github.bidiu.flood.msg.FloodMsgContent;
-import com.github.bidiu.megamerge.common.State;
-import com.github.bidiu.megamerge.node.StatefulNode;
+import com.github.bidiu.megamerge.node.AbstractNode;
 
 import jbotsim.Message;
 import jbotsim.Node;
@@ -20,7 +20,7 @@ import jbotsim.Node;
  * @author sunhe
  * @date Nov 20, 2016
  */
-public class FloodNode extends StatefulNode {
+public class FloodNode extends AbstractNode {
 	
 	public static final Map<String, State> ALL_STATES;
 	

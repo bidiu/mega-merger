@@ -1,9 +1,9 @@
 package com.github.bidiu.megamerge;
 
 import com.github.bidiu.flood.node.FloodNode;
+import com.github.bidiu.megamerge.common.LinkMessageManager;
+import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
-import com.github.bidiu.megamerge.msg.LinkMessageManager;
-import com.github.bidiu.megamerge.msg.MessageManager;
 import com.github.bidiu.megamerge.util.Logger;
 
 import jbotsim.Link;
@@ -20,6 +20,7 @@ import jbotsim.ui.JViewer;
  * TODO adapt StatefulNode
  * TODO restart support
  * TODO ID utility
+ * TODO drop Stateful from AbstractNode
  * 
  * Constraints:
  * 1. Every time a message sent, it has to be copied

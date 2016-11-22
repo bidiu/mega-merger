@@ -8,8 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 
+import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.msg.MessageContent;
-import com.github.bidiu.megamerge.msg.MessageManager;
 
 import jbotsim.Link;
 import jbotsim.Message;

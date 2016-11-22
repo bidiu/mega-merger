@@ -1,4 +1,4 @@
-package com.github.bidiu.megamerge.msg;
+package com.github.bidiu.megamerge.common;
 
 import java.util.List;
 

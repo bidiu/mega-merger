@@ -1,4 +1,4 @@
-package com.github.bidiu.megamerge.common;
+package com.github.bidiu.flood.common;
 
 import java.util.Map;
 

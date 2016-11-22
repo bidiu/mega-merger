@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import com.github.bidiu.megamerge.common.State;
-import com.github.bidiu.megamerge.common.Stateful;
-import com.github.bidiu.megamerge.msg.MessageManager;
+import com.github.bidiu.flood.common.State;
+import com.github.bidiu.flood.common.Stateful;
+import com.github.bidiu.megamerge.common.City;
+import com.github.bidiu.megamerge.common.MessageManager;
+import com.github.bidiu.megamerge.util.ColorUtils;
 
 import jbotsim.Link;
 import jbotsim.Message;
@@ -19,13 +21,15 @@ import jbotsim.Node;
  * @author sunhe
  * @date Nov 20, 2016
  */
-public abstract class StatefulNode extends Node implements Stateful {
+public abstract class AbstractNode extends Node implements Stateful {
 	
 	protected Map<String, State> allStates;
 	
 	protected String uuid = UUID.randomUUID().toString();
 	
-	public StatefulNode(Map<String, State> allStates) {
+	protected City city;
+	
+	public AbstractNode(Map<String, State> allStates) {
 		this.allStates = allStates;
 		for (Entry<String, State> entry : allStates.entrySet()) {
 			if (entry.getValue().isInitial()) {
@@ -56,6 +60,20 @@ public abstract class StatefulNode extends Node implements Stateful {
 
 	public String getUuid() {
 		return uuid;
+	}
+	
+	public City getCity() {
+		return city;
+	}
+	
+	public void setCity(City city) {
+		this.city = city;
+		if (city.isDowntown()) {
+			setColor(ColorUtils.darker(city.getColor()));
+		}
+		else {
+			setColor(ColorUtils.brighter(city.getColor()));
+		}
 	}
 	
 	public void mySendAll(Object content) {
@@ -101,10 +119,10 @@ public abstract class StatefulNode extends Node implements Stateful {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof StatefulNode)) {
+		if (!(obj instanceof AbstractNode)) {
 			return false;
 		}
-		StatefulNode other = (StatefulNode) obj;
+		AbstractNode other = (AbstractNode) obj;
 		if (uuid == null) {
 			if (other.uuid != null) {
 				return false;
