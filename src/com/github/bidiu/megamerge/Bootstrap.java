@@ -1,9 +1,13 @@
 package com.github.bidiu.megamerge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.bidiu.flood.node.FloodNode;
 import com.github.bidiu.megamerge.common.LinkMessageManager;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
+import com.github.bidiu.megamerge.node.AbstractNode;
 import com.github.bidiu.megamerge.util.Logger;
 
 import jbotsim.Link;
@@ -37,6 +41,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	public static final int WINDOW_SIZE_X = 800;
 	public static final int WINDOW_SIZE_Y = 600;
 	public static final String MSG_MANAGER = "MSG_MANAGER";
+	public static final String WEIGHT = "WEIGHT";
 	
 	public static Logger logger;
 	
@@ -91,6 +96,10 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	@Override
 	public void onLinkAdded(Link link) {
 		link.setProperty(MSG_MANAGER, new LinkMessageManager(link));
+		List<String> weight = new ArrayList<>();
+		weight.add(((AbstractNode) link.endpoint(0)).getUuid());
+		weight.add(((AbstractNode) link.endpoint(1)).getUuid());
+		link.setProperty(WEIGHT, weight);
 	}
 
 	@Override
