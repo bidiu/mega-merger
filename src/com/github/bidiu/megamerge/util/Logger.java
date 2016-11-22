@@ -10,6 +10,8 @@ import com.github.bidiu.megamerge.node.StatefulNode;
  */
 public class Logger {
 	
+	public static final boolean DEBUG_SWITCH = true;
+	
 	protected long startTime;
 	
 	public Logger(long startTime) {
@@ -26,7 +28,7 @@ public class Logger {
 	}
 	
 	public synchronized void log(StatefulNode node, String content) {
-		String s = String.format("[%.2f s] %s: %s", getCurTime(), node, content);
+		String s = String.format("[%.2f s] [%s]: %s", getCurTime(), node, content);
 		System.out.println(s);
 	}
 	
@@ -36,8 +38,17 @@ public class Logger {
 	}
 	
 	public synchronized void error(StatefulNode node, String content) {
-		String s = String.format("[%.2f s] %s: %s", getCurTime(), node, content);
+		String s = String.format("[%.2f s] [%s]: %s", getCurTime(), node, content);
 		System.err.println(s);
+	}
+	
+	public synchronized void debug(String content) {
+		if (! DEBUG_SWITCH) {
+			return;
+		}
+		
+		String s = String.format("[%.2f s] debug: %s", getCurTime(), content);
+		System.out.println(s);
 	}
 	
 }

@@ -1,13 +1,14 @@
 package com.github.bidiu.megamerge.node;
 
-import java.awt.Color;
-import java.util.List;
+import static com.github.bidiu.megamerge.Bootstrap.MSG_MANAGER;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import com.github.bidiu.megamerge.core.State;
-import com.github.bidiu.megamerge.core.Stateful;
+import com.github.bidiu.megamerge.common.State;
+import com.github.bidiu.megamerge.common.Stateful;
+import com.github.bidiu.megamerge.msg.MessageManager;
 
 import jbotsim.Link;
 import jbotsim.Message;
@@ -62,11 +63,9 @@ public abstract class StatefulNode extends Node implements Stateful {
 	}
 	
 	public void mySendAll(Message msg) {
-		List<Link> links = getLinks();
-		for (Link link : links) {
-			link.setColor(Color.RED);
+		for (Node node : getNeighbors()) {
+			mySendTo(node, msg);
 		}
-		sendAll(msg);
 	}
 	
 	public void mySendTo(Node node, Object content) {
@@ -75,14 +74,14 @@ public abstract class StatefulNode extends Node implements Stateful {
 	
 	public void mySendTo(Node node, Message msg) {
 		Link link = getCommonLinkWith(node);
-		link.setColor(Color.RED);
+		((MessageManager) link.getProperty(MSG_MANAGER)).addMsgToNode(node, msg);
 		send(node, msg);
 	}
 	
 	public Message myReceiveMsg(Message msg) {
 		Node sender = msg.getSender();
 		Link link = getCommonLinkWith(sender);
-		link.setColor(Color.BLACK);
+		((MessageManager) link.getProperty(MSG_MANAGER)).receiveMsg(msg);
 		return msg;
 	}
 	

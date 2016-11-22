@@ -1,6 +1,6 @@
 package com.github.bidiu.flood.node;
 
-import static com.github.bidiu.megamerge.MegaMergeDemo.logger;
+import static com.github.bidiu.megamerge.Bootstrap.logger;
 
 import java.awt.Color;
 import java.util.Collections;
@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.bidiu.megamerge.core.State;
+import com.github.bidiu.flood.msg.FloodMsgContent;
+import com.github.bidiu.megamerge.common.State;
 import com.github.bidiu.megamerge.node.StatefulNode;
 
 import jbotsim.Message;
@@ -42,7 +43,7 @@ public class FloodNode extends StatefulNode {
 	@Override
 	public void onSelection() {
 		setCurState(allStates.get(STATE_INITIATOR));
-		mySendAll(new Message());
+		mySendAll(new FloodMsgContent());
 		logger.log(this, "became initiator, broadcasted to all neighbors");
 		setCurState(allStates.get(STATE_DONE));
 		logger.log(this, "became done");
