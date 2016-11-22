@@ -17,10 +17,10 @@ import jbotsim.ui.JViewer;
 /**
  * algorithm bootstrap class
  * 
- * TODO adapt StatefulNode
- * TODO restart support
  * TODO ID utility
  * TODO drop Stateful from AbstractNode
+ * TODO use HSL color system
+ * TODO restart support
  * 
  * Constraints:
  * 1. Every time a message sent, it has to be copied

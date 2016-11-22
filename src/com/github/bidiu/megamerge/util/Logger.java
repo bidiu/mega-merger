@@ -46,7 +46,6 @@ public class Logger {
 		if (! DEBUG_SWITCH) {
 			return;
 		}
-		
 		String s = String.format("[%.2f s] debug: %s", getCurTime(), content);
 		System.out.println(s);
 	}

@@ -69,10 +69,10 @@ public abstract class AbstractNode extends Node implements Stateful {
 	public void setCity(City city) {
 		this.city = city;
 		if (city.isDowntown()) {
-			setColor(ColorUtils.darker(city.getColor()));
+			setColor(ColorUtils.shade(city.getColor()));
 		}
 		else {
-			setColor(ColorUtils.brighter(city.getColor()));
+			setColor(ColorUtils.tint(city.getColor()));
 		}
 	}
 	
