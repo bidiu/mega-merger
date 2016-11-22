@@ -19,16 +19,13 @@ import jbotsim.Node;
  */
 public abstract class AbstractNode extends Node {
 	
-	protected String uuid = UUID.randomUUID().toString();
+	protected String uuid;
 	
 	private City city;
 	
 	public AbstractNode() {
-		// dummy
-	}
-	
-	public AbstractNode(City city) {
-		setCity(city);
+		uuid = UUID.randomUUID().toString();
+		setCity(new City(uuid.substring(0, 6)+"...", 1, ColorUtils.random(), true));
 	}
 
 	public String getUuid() {
