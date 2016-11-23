@@ -1,6 +1,7 @@
 package com.github.bidiu.megamerge.util;
 
 import java.awt.Color;
+import java.util.Random;
 
 public class ColorUtils {
 	
@@ -29,6 +30,14 @@ public class ColorUtils {
 		int r = (int)(Math.random() * 256);
 		int g = (int)(Math.random() * 256);
 		int b = (int)(Math.random() * 256);
+		return new Color(r, g, b);
+	}
+	
+	public static Color random(long seed) {
+		Random rand = new Random(seed);
+		int r = (int)(rand.nextDouble() * 256);
+		int g = (int)(rand.nextDouble() * 256);
+		int b = (int)(rand.nextDouble() * 256);
 		return new Color(r, g, b);
 	}
 	

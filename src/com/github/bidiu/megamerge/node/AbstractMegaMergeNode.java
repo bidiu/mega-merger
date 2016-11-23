@@ -67,6 +67,14 @@ public abstract class AbstractMegaMergeNode extends Node {
 		}
 	}
 	
+	public void mySendThrough(Link link, Object content) {
+		mySendThrough(link, new Message(content));
+	}
+	
+	public void mySendThrough(Link link, Message msg) {
+		mySendTo(link.getOtherEndpoint(this), msg);
+	}
+	
 	public void mySendTo(Node node, Object content) {
 		mySendTo(node, new Message(content));
 	}
@@ -140,6 +148,7 @@ public abstract class AbstractMegaMergeNode extends Node {
 		else {
 			throw new IllegalStateException();
 		}
+		afterProcessingMsg();
 	}
 	
 	public abstract void onAreYouOutside(AreYouOutside msg, Link link);
@@ -155,6 +164,8 @@ public abstract class AbstractMegaMergeNode extends Node {
 	public abstract void onNotification(Notification msg, Link link);
 	
 	public abstract void onMinLinkWeight(MinLinkWeight msg, Link link);
+	
+	public abstract void afterProcessingMsg();
 	
 	@Override
 	public int hashCode() {

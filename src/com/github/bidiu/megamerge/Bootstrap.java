@@ -17,7 +17,6 @@ import jbotsim.ui.JViewer;
 /**
  * algorithm bootstrap class
  * 
- * TODO ID utility
  * TODO drop Stateful from AbstractNode
  * TODO use HSL color system
  * TODO restart support
@@ -95,8 +94,8 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 		link.setProperty(MSG_MANAGER, new LinkMessageManager(link));
 		
 		// use string "(UUID, UUID)" as weight of every link
-		String weight = "(" + link.endpoint(0).toString() + ", "
-				+ link.endpoint(1).toString() + ")";
+		String weight = "(" + link.endpoint(0).toString().substring(0, 6) + "..., "
+				+ link.endpoint(1).toString().substring(0, 6) + "...)";
 		link.setProperty(WEIGHT, weight);
 	}
 

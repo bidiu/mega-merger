@@ -10,8 +10,12 @@ public class LetUsMerge extends AbstractMsgContent {
 	
 	private City fromCity;
 	
-	public LetUsMerge(City fromCity) {
+	/** sender's UUID */
+	private String uuid;
+	
+	public LetUsMerge(City fromCity, String uuid) {
 		this.fromCity = fromCity;
+		this.uuid = uuid;
 	}
 	
 	public City getFromCity() {
@@ -20,6 +24,14 @@ public class LetUsMerge extends AbstractMsgContent {
 
 	public void setFromCity(City fromCity) {
 		this.fromCity = fromCity;
+	}
+	
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	@Override

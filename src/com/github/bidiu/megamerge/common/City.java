@@ -8,7 +8,7 @@ import java.awt.Color;
  * @author sunhe
  * @date Nov 22, 2016
  */
-public class City implements Cloneable {
+public class City {
 	
 	private String name;
 	
@@ -18,11 +18,27 @@ public class City implements Cloneable {
 	
 	private boolean downtown;
 	
+	public City(String name, int level, Color color) {
+		this(name, level, color, false);
+	}
+	
 	public City(String name, int level, Color color, boolean downtown) {
 		this.name = name;
 		this.level = level;
 		this.color = color;
 		this.downtown = downtown;
+	}
+	
+	/**
+	 * Clone the given other city, except for field "downtown" being false.
+	 * 
+	 * @param otherCity
+	 * 		city to be cloned
+	 * @author sunhe
+	 * @date Nov 22, 2016
+	 */
+	public City(City otherCity) {
+		this(otherCity.getName(), otherCity.getLevel(), otherCity.getColor(), false);
 	}
 
 	public String getName() {
@@ -86,18 +102,6 @@ public class City implements Cloneable {
 			return false;
 		}
 		return true;
-	}
-
-	/*
-	 * This is a deep copy except for field "downtown" being false.
-	 */
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		City cloned = (City) super.clone();
-		cloned.setName(new String(name));
-		cloned.setLevel(level);
-		cloned.setColor(new Color(color.getRGB()));
-		return cloned;
 	}
 
 	@Override
