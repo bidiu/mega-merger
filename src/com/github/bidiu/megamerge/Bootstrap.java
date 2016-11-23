@@ -48,12 +48,13 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	public static void main(String[] args) {
 		startTime = System.currentTimeMillis();
 		logger = new Logger(startTime);
-		Bootstrap demo = new Bootstrap();
+		// FIXME
+		Bootstrap listener = new Bootstrap();
 		
 		t = new Topology(WINDOW_SIZE_X, WINDOW_SIZE_Y);
 		t.setDefaultNodeModel(MegaMergeNode.class);
-		t.addSelectionListener(demo);
-		t.addConnectivityListener(demo);
+		t.addSelectionListener(listener);
+		t.addConnectivityListener(listener);
 		// force redraw call every clock by moving an invisible node
 		t.addClockListener(new ClockListener() {
 			

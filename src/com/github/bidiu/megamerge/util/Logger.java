@@ -1,6 +1,6 @@
 package com.github.bidiu.megamerge.util;
 
-import com.github.bidiu.megamerge.node.AbstractNode;
+import com.github.bidiu.megamerge.node.AbstractMegaMergeNode;
 
 /**
  * thread-safe
@@ -27,7 +27,7 @@ public class Logger {
 		System.out.println(s);
 	}
 	
-	public synchronized void log(AbstractNode node, String content) {
+	public synchronized void log(AbstractMegaMergeNode node, String content) {
 		String s = String.format("[%.2f s] [%s]: %s", getCurTime(), node, content);
 		System.out.println(s);
 	}
@@ -37,7 +37,7 @@ public class Logger {
 		System.err.println(s);
 	}
 	
-	public synchronized void error(AbstractNode node, String content) {
+	public synchronized void error(AbstractMegaMergeNode node, String content) {
 		String s = String.format("[%.2f s] [%s]: %s", getCurTime(), node, content);
 		System.err.println(s);
 	}

@@ -12,13 +12,13 @@ import java.awt.Color;
  * @author sunhe
  * @date Nov 22, 2016
  */
-public class TheMinLinkWeight extends AbstractMsgContent {
+public class MinLinkWeight extends AbstractMsgContent {
 	
 	public static final Color COLOR = Color.ORANGE;
 	
 	private String minWeight;
 	
-	public TheMinLinkWeight(String minWeight) {
+	public MinLinkWeight(String minWeight) {
 		this.minWeight = minWeight;
 	}
 	
