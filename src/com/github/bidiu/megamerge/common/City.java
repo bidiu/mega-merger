@@ -102,7 +102,7 @@ public class City implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "City: {name: " + name + ", level: " + level + ", downtown: " + downtown + "}";
+		return "{name: " + name + ", level: " + level + "}";
 	}
 	
 }

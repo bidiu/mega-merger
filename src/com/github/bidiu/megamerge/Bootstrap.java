@@ -1,8 +1,5 @@
 package com.github.bidiu.megamerge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.bidiu.megamerge.common.LinkMessageManager;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
@@ -96,10 +93,9 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	public void onLinkAdded(Link link) {
 		link.setProperty(MSG_MANAGER, new LinkMessageManager(link));
 		
-		// use (UUID, UUID) as weight of every link
-		List<String> weight = new ArrayList<>();
-		weight.add(link.endpoint(0).toString());
-		weight.add(link.endpoint(1).toString());
+		// use string "(UUID, UUID)" as weight of every link
+		String weight = "(" + link.endpoint(0).toString() + ", "
+				+ link.endpoint(1).toString() + ")";
 		link.setProperty(WEIGHT, weight);
 	}
 
