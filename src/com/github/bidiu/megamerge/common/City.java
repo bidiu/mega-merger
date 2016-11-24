@@ -10,6 +10,9 @@ import java.awt.Color;
  */
 public class City {
 	
+	public static final City ELECTED = new City("elected node", -1, Color.RED);
+	public static final City NON_ELECTED = new City("non-elected node", -1, Color.BLACK);
+	
 	private String name;
 	
 	private int level;

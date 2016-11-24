@@ -3,7 +3,7 @@ package com.github.bidiu.megamerge;
 import com.github.bidiu.megamerge.common.LinkMessageManager;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
-import com.github.bidiu.megamerge.node.MegaMergeNode;
+import com.github.bidiu.megamerge.node.MmNode;
 import com.github.bidiu.megamerge.util.Logger;
 
 import jbotsim.Link;
@@ -17,8 +17,7 @@ import jbotsim.ui.JViewer;
 /**
  * algorithm bootstrap class
  * 
- * TODO drop Stateful from AbstractNode
- * TODO use HSL color system
+ * TODO use width to represent tree links
  * TODO restart support
  * 
  * Constraints:
@@ -51,7 +50,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 		Bootstrap listener = new Bootstrap();
 		
 		t = new Topology(WINDOW_SIZE_X, WINDOW_SIZE_Y);
-		t.setDefaultNodeModel(MegaMergeNode.class);
+		t.setDefaultNodeModel(MmNode.class);
 		t.addSelectionListener(listener);
 		t.addConnectivityListener(listener);
 		// force redraw call every clock by moving an invisible node

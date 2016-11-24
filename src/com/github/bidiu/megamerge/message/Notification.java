@@ -16,8 +16,14 @@ public class Notification extends AbstractMsgContent {
 	
 	private City newCity;
 	
+	private boolean friendlyMerge;
+	
 	public Notification(City newCity) {
-		this.newCity = newCity;
+		this(newCity, true);
+	}
+	
+	public Notification(City newCity, boolean friendlyMerge) {
+		this.friendlyMerge = friendlyMerge;
 	}
 	
 	public City getNewCity() {
@@ -26,6 +32,14 @@ public class Notification extends AbstractMsgContent {
 
 	public void setNewCity(City newCity) {
 		this.newCity = newCity;
+	}
+	
+	public boolean isFriendlyMerge() {
+		return friendlyMerge;
+	}
+
+	public void setFriendlyMerge(boolean friendlyMerge) {
+		this.friendlyMerge = friendlyMerge;
 	}
 
 	@Override

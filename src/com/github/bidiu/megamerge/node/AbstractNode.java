@@ -14,6 +14,7 @@ import com.github.bidiu.megamerge.message.LetUsMerge;
 import com.github.bidiu.megamerge.message.MergeMe;
 import com.github.bidiu.megamerge.message.MessageContent;
 import com.github.bidiu.megamerge.message.Notification;
+import com.github.bidiu.megamerge.message.Termination;
 import com.github.bidiu.megamerge.message.MinLinkWeight;
 import com.github.bidiu.megamerge.util.ColorUtils;
 
@@ -26,7 +27,7 @@ import jbotsim.Node;
  * @author sunhe
  * @date Nov 20, 2016
  */
-public abstract class AbstractMegaMergeNode extends Node {
+public abstract class AbstractNode extends Node {
 	
 	private boolean initExecuted = false;
 	
@@ -34,7 +35,7 @@ public abstract class AbstractMegaMergeNode extends Node {
 	
 	private City city;
 	
-	public AbstractMegaMergeNode() {
+	public AbstractNode() {
 		uuid = UUID.randomUUID().toString();
 		setCity(new City(uuid.substring(0, 6)+"...", 1, ColorUtils.random(), true));
 	}
@@ -80,7 +81,7 @@ public abstract class AbstractMegaMergeNode extends Node {
 	}
 	
 	public void mySendTo(Node node, Message msg) {
-		logger.log(this, "send message to node (ID: " + msg.getSender() + "): " + msg.getContent());
+		logger.log(this, "send message to node (ID: " + node + "): " + msg.getContent());
 		Link link = getCommonLinkWith(node);
 		((MessageManager) link.getProperty(MSG_MANAGER)).addMsgToNode(node, msg);
 		send(node, msg);
@@ -122,7 +123,8 @@ public abstract class AbstractMegaMergeNode extends Node {
 		myReceiveMsg(msg);
 		MessageContent msgContent = (MessageContent) msg.getContent();
 		Link link = getCommonLinkWith(msg.getSender());
-		logger.log(this, "receive message from node (ID: " + msg.getSender() + "): " + msgContent);
+		// TODO debug
+//		logger.log(this, "receive message from node (ID: " + msg.getSender() + "): " + msgContent);
 		
 		if (msgContent instanceof AreYouOutside) {
 			onAreYouOutside((AreYouOutside) msgContent, link);
@@ -145,6 +147,9 @@ public abstract class AbstractMegaMergeNode extends Node {
 		else if (msgContent instanceof MinLinkWeight) {
 			onMinLinkWeight((MinLinkWeight) msgContent, link);
 		}
+		else if (msgContent instanceof Termination) {
+			onTermination((Termination) msgContent, link);
+		}
 		else {
 			throw new IllegalStateException();
 		}
@@ -165,6 +170,8 @@ public abstract class AbstractMegaMergeNode extends Node {
 	
 	public abstract void onMinLinkWeight(MinLinkWeight msg, Link link);
 	
+	public abstract void onTermination(Termination msg, Link link);
+	
 	public abstract void afterProcessingMsg();
 	
 	@Override
@@ -183,10 +190,10 @@ public abstract class AbstractMegaMergeNode extends Node {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof AbstractMegaMergeNode)) {
+		if (!(obj instanceof AbstractNode)) {
 			return false;
 		}
-		AbstractMegaMergeNode other = (AbstractMegaMergeNode) obj;
+		AbstractNode other = (AbstractNode) obj;
 		if (uuid == null) {
 			if (other.uuid != null) {
 				return false;
