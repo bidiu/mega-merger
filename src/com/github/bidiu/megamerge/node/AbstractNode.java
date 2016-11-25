@@ -35,6 +35,8 @@ public abstract class AbstractNode extends Node {
 	
 	private City city;
 	
+	private boolean cityChanged;
+	
 	public AbstractNode() {
 		uuid = UUID.randomUUID().toString();
 		setCity(new City(uuid.substring(0, 6)+"...", 1, ColorUtils.random(), true));
@@ -56,6 +58,11 @@ public abstract class AbstractNode extends Node {
 		else {
 			setColor(ColorUtils.tint(city.getColor()));
 		}
+		cityChanged = true;
+	}
+	
+	public boolean isCityChanged() {
+		return cityChanged;
 	}
 	
 	public void mySendAll(Object content) {
@@ -121,39 +128,49 @@ public abstract class AbstractNode extends Node {
 	@Override
 	public void onMessage(Message msg) {
 		myReceiveMsg(msg);
+		cityChanged = false;
 		MessageContent msgContent = (MessageContent) msg.getContent();
 		Link link = getCommonLinkWith(msg.getSender());
+		Class<?> msgClazz = null;
 		// TODO debug
 //		logger.log(this, "receive message from node (ID: " + msg.getSender() + "): " + msgContent);
 		
 		if (msgContent instanceof AreYouOutside) {
+			msgClazz = AreYouOutside.class;
 			onAreYouOutside((AreYouOutside) msgContent, link);
 		}
 		else if (msgContent instanceof External) {
+			msgClazz = External.class;
 			onExternal((External) msgContent, link);
 		}
 		else if (msgContent instanceof Internal) {
+			msgClazz = Internal.class;
 			onInternal((Internal) msgContent, link);
 		}
 		else if (msgContent instanceof LetUsMerge) {
+			msgClazz = LetUsMerge.class;
 			onLetUsMerge((LetUsMerge) msgContent, link);
 		}
 		else if (msgContent instanceof MergeMe) {
+			msgClazz = MergeMe.class;
 			onMergeMe((MergeMe) msgContent, link);
 		}
 		else if (msgContent instanceof Notification) {
+			msgClazz = Notification.class;
 			onNotification((Notification) msgContent, link);
 		}
 		else if (msgContent instanceof MinLinkWeight) {
+			msgClazz = MinLinkWeight.class;
 			onMinLinkWeight((MinLinkWeight) msgContent, link);
 		}
 		else if (msgContent instanceof Termination) {
+			msgClazz = Termination.class;
 			onTermination((Termination) msgContent, link);
 		}
 		else {
 			throw new IllegalStateException();
 		}
-		afterProcessingMsg();
+		afterProcessingMsg(msgClazz);
 	}
 	
 	public abstract void onAreYouOutside(AreYouOutside msg, Link link);
@@ -172,7 +189,9 @@ public abstract class AbstractNode extends Node {
 	
 	public abstract void onTermination(Termination msg, Link link);
 	
-	public abstract void afterProcessingMsg();
+	public void afterProcessingMsg(Class<?> msgClazz) {
+		// dummy
+	}
 	
 	@Override
 	public int hashCode() {

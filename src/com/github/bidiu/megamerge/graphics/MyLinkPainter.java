@@ -24,6 +24,7 @@ import jbotsim.ui.painting.LinkPainter;
  */
 public class MyLinkPainter extends LinkPainter {
 
+	private static final int ARROW_STROKE_WIDTH = 1;
 	private static final int ARROW_WIDTH = 3;
 	private static final int ARROR_LENGTH = 10;
 	private static final int NODE_RADIUS = 6;
@@ -50,7 +51,7 @@ public class MyLinkPainter extends LinkPainter {
 			
 			MessageContent msgContent = (MessageContent) msgList.get(0).getContent();
 			drawStraightLineArrow(g2d, srcNode.getX(), srcNode.getY(), destNode.getX(), destNode.getY(), 
-					msgContent.getColor(), link.getWidth(), dualDirections ? OFFSET : 0);
+					msgContent.getColor(), ARROW_STROKE_WIDTH, dualDirections ? OFFSET : 0);
 			drawn = true;
 		}
 		if (! drawn) {

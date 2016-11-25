@@ -10,8 +10,15 @@ public class MergeMe extends AbstractMsgContent {
 	
 	private City mergeTo;
 	
+	private boolean toAskMinWeight;
+	
 	public MergeMe(City mergeTo) {
+		this(mergeTo, false);
+	}
+	
+	public MergeMe(City mergeTo, boolean toAskMinWeight) {
 		this.mergeTo = mergeTo;
+		this.toAskMinWeight = toAskMinWeight;
 	}
 	
 	public City getFromCity() {
@@ -20,6 +27,22 @@ public class MergeMe extends AbstractMsgContent {
 
 	public void setFromCity(City fromCity) {
 		this.mergeTo = fromCity;
+	}
+	
+	public City getMergeTo() {
+		return mergeTo;
+	}
+
+	public void setMergeTo(City mergeTo) {
+		this.mergeTo = mergeTo;
+	}
+
+	public boolean isToAskMinWeight() {
+		return toAskMinWeight;
+	}
+
+	public void setToAskMinWeight(boolean toAskMinWeight) {
+		this.toAskMinWeight = toAskMinWeight;
 	}
 
 	@Override

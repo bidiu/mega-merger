@@ -16,14 +16,14 @@ public class Notification extends AbstractMsgContent {
 	
 	private City newCity;
 	
-	private boolean friendlyMerge;
+	private boolean toAskMinWeight;
 	
 	public Notification(City newCity) {
 		this(newCity, true);
 	}
 	
-	public Notification(City newCity, boolean friendlyMerge) {
-		this.friendlyMerge = friendlyMerge;
+	public Notification(City newCity, boolean toAskMinWeight) {
+		this.toAskMinWeight = toAskMinWeight;
 	}
 	
 	public City getNewCity() {
@@ -34,12 +34,12 @@ public class Notification extends AbstractMsgContent {
 		this.newCity = newCity;
 	}
 	
-	public boolean isFriendlyMerge() {
-		return friendlyMerge;
+	public boolean isToAskMinWeight() {
+		return toAskMinWeight;
 	}
 
-	public void setFriendlyMerge(boolean friendlyMerge) {
-		this.friendlyMerge = friendlyMerge;
+	public void setToAskMinWeight(boolean toAskMinWeight) {
+		this.toAskMinWeight = toAskMinWeight;
 	}
 
 	@Override
