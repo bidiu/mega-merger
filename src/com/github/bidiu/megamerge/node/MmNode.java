@@ -50,6 +50,7 @@ public class MmNode extends AbstractNode {
 	
 	// FIXME
 	private int weightCounter;
+	private boolean externalRecevied;
 	
 	/*
 	 * Initial procedure at the very beginning.
@@ -102,6 +103,7 @@ public class MmNode extends AbstractNode {
 	 */
 	@Override
 	public void onExternal(External msg, Link link) {
+		externalRecevied = true;
 		if (linkWithMinWeight == null || linkWithMinWeight != null && 
 				((String) link.getProperty(WEIGHT)).compareTo((String) linkWithMinWeight.getProperty(WEIGHT)) < 0) {
 			linkWithMinWeight = link;
@@ -123,9 +125,89 @@ public class MmNode extends AbstractNode {
 						LetUsMerge blockedMsg = it.next();
 						Link blockedLink = (Link) blockedMsg.getProperty(LINK);
 						if (linkWithMinWeight.equals(blockedLink)) {
-							// TODO friendly merge
+							// N1: friendly merge
+							// N1: for some reasons, must be friendly merge
+							// N1: here parameter link and linkWithMinWeight are the same link
+							int myLevel = getCity().getLevel();
+							int senderLevel = blockedMsg.getFromCity().getLevel();
+							
+							// redundant check
+							if (myLevel != senderLevel) {
+								throw new IllegalStateException();
+							}
 							it.remove();
 							
+							/*
+							 * following copy from onLetUsMerge
+							 */
+							link.setWidth(TREE_PATH_WIDTH);
+							String weight = (String) link.getProperty(WEIGHT);
+							City newCity = new City(WEIGHT, myLevel+1, ColorUtils.random(HashUtils.sToL(weight)));
+							String senderUuid = blockedMsg.getUuid();
+							
+							if (uuid.compareTo(senderUuid) < 0) {
+								// I am the new downtown
+								newCity.setDowntown(true);
+								setCity(newCity);
+								if (parent != null) {
+									children.add(parent);
+									parent = null;
+								}
+								children.add((MmNode) link.getOtherEndpoint(this));
+							}
+							else {
+								// the other is the new downtown
+								newCity.setDowntown(false);
+								setCity(newCity);
+								if (parent != null) {
+									children.add(parent);
+								}
+								parent = (MmNode) link.getOtherEndpoint(this);
+							}
+							
+							// notification of new city
+							for (Link internalLink : internalLinks) {
+								mySendThrough(internalLink, new Notification(new City(newCity)));
+							}
+							internalLinks.add(link);
+							
+							// reset
+							weightCounter = 0;
+							linkWithMinWeight = null;
+							linkTryingToMerge = null;
+							externalRecevied = false;
+							
+							// unblock let's-merge messages if possible
+							Iterator<LetUsMerge> it2 = blockedLetUsMerge.iterator();
+							while (it2.hasNext()) {
+								LetUsMerge blockedMsg2 = it2.next();
+								if (getCity().getLevel() > blockedMsg2.getFromCity().getLevel()) {
+									Link blockedLink2 = (Link) blockedMsg2.getProperty(LINK);
+									mySendThrough(blockedLink2, new MergeMe(new City(getCity()), true));
+									children.add((MmNode) link.getOtherEndpoint(this));
+									internalLinks.add(blockedLink2);
+									it2.remove();
+								}
+							}
+							
+							List<Link> externalLinks = getLinks();
+							externalLinks.removeAll(internalLinks);
+							if (! externalLinks.isEmpty()) {
+								// current downtown has external links
+								Link nextLink = Collections.min(externalLinks, new Comparator<Link>() {
+
+									@Override
+									public int compare(Link link1, Link link2) {
+										String weight1 = (String) link1.getProperty(WEIGHT);
+										String weight2 = (String) link2.getProperty(WEIGHT);
+										return weight1.compareTo(weight2);
+									}
+								});
+								mySendThrough(nextLink, new AreYouOutside(new City(getCity())));
+							}
+							else if (parent != null && children.isEmpty()) {
+								mySendTo(parent, new MinLinkWeight(INF_WEIGHT));
+							}
 						}
 					}
 				}
@@ -236,9 +318,11 @@ public class MmNode extends AbstractNode {
 			}
 			internalLinks.add(link);
 			
+			// reset
 			weightCounter = 0;
 			linkWithMinWeight = null;
 			linkTryingToMerge = null;
+			externalRecevied = false;
 			
 			// unblock let's-merge messages if possible
 			Iterator<LetUsMerge> it = blockedLetUsMerge.iterator();
@@ -308,6 +392,7 @@ public class MmNode extends AbstractNode {
 		weightCounter = 0;
 		linkWithMinWeight = null;
 		linkTryingToMerge = null;
+		externalRecevied = false;
 		
 		// unblock let's merge messages if possible
 		Iterator<LetUsMerge> it = blockedLetUsMerge.iterator();
@@ -381,6 +466,7 @@ public class MmNode extends AbstractNode {
 		weightCounter = 0;
 		linkWithMinWeight = null;
 		linkTryingToMerge = null;
+		externalRecevied = false;
 		
 		// unblock let's merge messages if possible
 		Iterator<LetUsMerge> it = blockedLetUsMerge.iterator();
@@ -444,7 +530,29 @@ public class MmNode extends AbstractNode {
 				((String) link.getProperty(WEIGHT)).compareTo((String) linkWithMinWeight.getProperty(WEIGHT)) < 0) {
 			linkWithMinWeight = link;
 		}
-		if (weightCounter == children.size() && internalLinks.size() == getLinks().size()) {
+//		if (weightCounter == children.size() && internalLinks.size() == getLinks().size()) {
+//			if (parent == null) {
+//				if (INF_WEIGHT.equals(msg.getMinWeight())) {
+//					setCity(City.ELECTED);
+//					for (MmNode child : children) {
+//						mySendTo(child, new Termination());
+//					}
+//				}
+//				else {
+//					mySendThrough(linkWithMinWeight, new LetUsMerge(new City(getCity()), uuid));
+//				}
+//			}
+//			else {
+//				mySendTo(parent, new MinLinkWeight((String) linkWithMinWeight.getProperty(WEIGHT)));
+//			}
+//		}
+		/*
+		 * till the end of function is version with N2
+		 */
+		
+		
+		if (weightCounter == children.size() && 
+				(internalLinks.size() == getLinks().size() || externalRecevied)) {
 			if (parent == null) {
 				if (INF_WEIGHT.equals(msg.getMinWeight())) {
 					setCity(City.ELECTED);
@@ -454,6 +562,108 @@ public class MmNode extends AbstractNode {
 				}
 				else {
 					mySendThrough(linkWithMinWeight, new LetUsMerge(new City(getCity()), uuid));
+					
+					/*
+					 * 
+					 */
+					if (! internalLinks.contains(linkWithMinWeight)) {
+						// I'm the node supposed to send let-us-merge outside
+						// In other words, try to merge through the link just asked with outside
+						linkTryingToMerge = linkWithMinWeight;
+						
+						// N1
+						// unblock let's merge messages if possible
+						Iterator<LetUsMerge> it = blockedLetUsMerge.iterator();
+						while (it.hasNext()) {
+							LetUsMerge blockedMsg = it.next();
+							Link blockedLink = (Link) blockedMsg.getProperty(LINK);
+							if (linkWithMinWeight.equals(blockedLink)) {
+								// N1: friendly merge
+								// N1: for some reasons, must be friendly merge
+								// N1: here parameter link and linkWithMinWeight are the same link
+								int myLevel = getCity().getLevel();
+								int senderLevel = blockedMsg.getFromCity().getLevel();
+								
+								// redundant check
+								if (myLevel != senderLevel) {
+									throw new IllegalStateException();
+								}
+								it.remove();
+								
+								/*
+								 * following copy from onLetUsMerge
+								 */
+								link.setWidth(TREE_PATH_WIDTH);
+								String weight = (String) link.getProperty(WEIGHT);
+								City newCity = new City(WEIGHT, myLevel+1, ColorUtils.random(HashUtils.sToL(weight)));
+								String senderUuid = blockedMsg.getUuid();
+								
+								if (uuid.compareTo(senderUuid) < 0) {
+									// I am the new downtown
+									newCity.setDowntown(true);
+									setCity(newCity);
+									if (parent != null) {
+										children.add(parent);
+										parent = null;
+									}
+									children.add((MmNode) link.getOtherEndpoint(this));
+								}
+								else {
+									// the other is the new downtown
+									newCity.setDowntown(false);
+									setCity(newCity);
+									if (parent != null) {
+										children.add(parent);
+									}
+									parent = (MmNode) link.getOtherEndpoint(this);
+								}
+								
+								// notification of new city
+								for (Link internalLink : internalLinks) {
+									mySendThrough(internalLink, new Notification(new City(newCity)));
+								}
+								internalLinks.add(link);
+								
+								// reset
+								weightCounter = 0;
+								linkWithMinWeight = null;
+								linkTryingToMerge = null;
+								externalRecevied = false;
+								
+								// unblock let's-merge messages if possible
+								Iterator<LetUsMerge> it2 = blockedLetUsMerge.iterator();
+								while (it2.hasNext()) {
+									LetUsMerge blockedMsg2 = it2.next();
+									if (getCity().getLevel() > blockedMsg2.getFromCity().getLevel()) {
+										Link blockedLink2 = (Link) blockedMsg2.getProperty(LINK);
+										mySendThrough(blockedLink2, new MergeMe(new City(getCity()), true));
+										children.add((MmNode) link.getOtherEndpoint(this));
+										internalLinks.add(blockedLink2);
+										it2.remove();
+									}
+								}
+								
+								List<Link> externalLinks = getLinks();
+								externalLinks.removeAll(internalLinks);
+								if (! externalLinks.isEmpty()) {
+									// current downtown has external links
+									Link nextLink = Collections.min(externalLinks, new Comparator<Link>() {
+
+										@Override
+										public int compare(Link link1, Link link2) {
+											String weight1 = (String) link1.getProperty(WEIGHT);
+											String weight2 = (String) link2.getProperty(WEIGHT);
+											return weight1.compareTo(weight2);
+										}
+									});
+									mySendThrough(nextLink, new AreYouOutside(new City(getCity())));
+								}
+								else if (parent != null && children.isEmpty()) {
+									mySendTo(parent, new MinLinkWeight(INF_WEIGHT));
+								}
+							}
+						}
+					}
 				}
 			}
 			else {
