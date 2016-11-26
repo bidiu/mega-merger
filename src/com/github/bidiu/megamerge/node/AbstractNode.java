@@ -88,6 +88,13 @@ public abstract class AbstractNode extends Node {
 	}
 	
 	public void mySendTo(Node node, Message msg) {
+		// TODO debug
+		if (msg.getContent() instanceof Notification) {
+			Notification msgContent = (Notification) msg.getContent();
+			int a = 10;
+		}
+		
+		
 		logger.log(this, "send message to node (ID: " + node + "): " + msg.getContent());
 		Link link = getCommonLinkWith(node);
 		((MessageManager) link.getProperty(MSG_MANAGER)).addMsgToNode(node, msg);

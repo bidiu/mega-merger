@@ -23,6 +23,7 @@ public class Notification extends AbstractMsgContent {
 	}
 	
 	public Notification(City newCity, boolean toAskMinWeight) {
+		this.newCity = newCity;
 		this.toAskMinWeight = toAskMinWeight;
 	}
 	
