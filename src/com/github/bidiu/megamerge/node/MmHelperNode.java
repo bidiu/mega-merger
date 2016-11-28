@@ -14,7 +14,9 @@ import com.github.bidiu.megamerge.message.AreYouOutside;
 import com.github.bidiu.megamerge.message.External;
 import com.github.bidiu.megamerge.message.LetUsMerge;
 import com.github.bidiu.megamerge.message.MergeMe;
+import com.github.bidiu.megamerge.message.MinLinkWeight;
 import com.github.bidiu.megamerge.message.Notification;
+import com.github.bidiu.megamerge.message.Termination;
 import com.github.bidiu.megamerge.util.ColorUtils;
 import com.github.bidiu.megamerge.util.HashUtils;
 
@@ -39,14 +41,14 @@ public abstract class MmHelperNode extends AbstractNode {
 	private static final String LINK = "LINK";
 	
 	
-	private MmNodeV2 parent;
-	private List<MmNodeV2> children = new LinkedList<>();
+	protected MmNodeV2 parent;
+	protected List<MmNodeV2> children = new LinkedList<>();
 	
 	private List<Link> internalLinks = new LinkedList<>();
 	private Link linkTryingToMerge;
 	
-	private Link linkWithMinWeight;
-	private String minWeight;
+	protected Link linkWithMinWeight;
+	protected String minWeight;
 	
 	private int weightCounter;
 	private boolean externalRecevied;
@@ -78,11 +80,56 @@ public abstract class MmHelperNode extends AbstractNode {
 	//////////////////////////////
 	//////////////////////////////
 	
+	protected boolean isTermination() {
+		if (parent != null) new IllegalStateException("non-root node cannot invoke this method");
+		
+		if (isDoneAsking() && (minWeight == null || INF_WEIGHT.equals(minWeight))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	protected void whenTermination() {
+		setCity(parent == null ? City.ELECTED : City.NON_ELECTED);
+		for (MmNodeV2 child : children) {
+			mySendTo(child, new Termination());
+		}
+	}
+	
+	/**
+	 * is done asking "Are you outside?"
+	 */
+	protected boolean isDoneAsking() {
+		if ((externalRecevied || getExternalLinks().isEmpty()) 
+				&& weightCounter == children.size()) {
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public void onExternal(External msg, Link link) {
+		externalRecevied = true;
+	}
+	
+	/**
+	 * if necessary
+	 */
+	protected boolean updateLinkWithMinWeight(Link link, String weight) {
+		if (linkWithMinWeight == null || weight.compareTo(minWeight) < 0) {
+			linkWithMinWeight = link;
+			minWeight = weight;
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * @param whenNoExternalLink	when no external link
 	 * @param afterAsking			after sending "Are you outside?" (note only after successfully asking)
 	 */
-	protected void fireAreYouOutside(Runnable whenNoExternalLink, Runnable afterAsking) {
+	protected void fireNextAreYouOutside(Runnable whenNoExternalLink, Runnable afterAsking) {
 		List<Link> externalLinks = getExternalLinks();
 		if (externalLinks.isEmpty()) {
 			// no external link
@@ -237,7 +284,7 @@ public abstract class MmHelperNode extends AbstractNode {
 		});
 		
 		// at this point, if I am root, I must have at least one child
-		fireAreYouOutside(new Runnable() {
+		fireNextAreYouOutside(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -246,6 +293,11 @@ public abstract class MmHelperNode extends AbstractNode {
 				}
 			}
 		}, null);
+	}
+	
+	@Override
+	public void onMinLinkWeight(MinLinkWeight msg, Link link) {
+		weightCounter++;
 	}
 	
 }

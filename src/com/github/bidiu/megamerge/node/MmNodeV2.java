@@ -1,5 +1,8 @@
 package com.github.bidiu.megamerge.node;
 
+import static com.github.bidiu.megamerge.Bootstrap.WEIGHT;
+import static com.github.bidiu.megamerge.message.MinLinkWeight.INF_WEIGHT;
+
 import java.util.Iterator;
 import com.github.bidiu.megamerge.common.City;
 import com.github.bidiu.megamerge.message.AreYouOutside;
@@ -25,13 +28,13 @@ public class MmNodeV2 extends MmHelperNode {
 	// done
 	@Override
 	public void spontaneouslyDo() {
-		fireAreYouOutside(new Runnable() {
+		fireNextAreYouOutside(new Runnable() {
 			
 			// when no external link
 			@Override
 			public void run() {
 				// reach termination
-				setCity(City.ELECTED);
+				whenTermination();
 			}
 		}, null);
 	}
@@ -58,14 +61,82 @@ public class MmNodeV2 extends MmHelperNode {
 
 	@Override
 	public void onExternal(External msg, Link link) {
-		// TODO Auto-generated method stub
-		
+		super.onExternal(msg, link);
+		updateLinkWithMinWeight(link, (String) link.getProperty(WEIGHT));
+		if (isDoneAsking()) {
+			if (parent == null) {
+				// since just upon receiving external, termination is impossible
+				fireLetUsMerge(new LetUsMerge(new City(getCity()), uuid), new Runnable() {
+					
+					// when on fringe
+					@Override
+					public void run() {
+						// unblock possible "Let's merge"
+						// for some reasons, this MUST be a friendly merge with 
+						// the node sending "External"
+						unblockLetUsMerge(new Yield<LetUsMerge>() {
+
+							@Override
+							public boolean yieldMsg(LetUsMerge blockedMsg, Link blockedLink, Iterator<LetUsMerge> it) {
+								if (isFriendlyMerge(blockedMsg, blockedLink)) {
+									it.remove();
+									whenFriendlyMerge(blockedMsg, blockedLink);
+									// the reason to stop unblock is, unblock
+									// MergeMe scenario is the task of whenFriendlyMerge
+									return false;
+								}
+								return true;
+							}
+						});
+					}
+				});
+			}
+			else {
+				// since just upon receiving external, infinite weight is impossible
+				mySendTo(parent, new MinLinkWeight(minWeight));
+			}
+		}
 	}
 
 	@Override
 	public void onInternal(Internal msg, Link link) {
-		// TODO Auto-generated method stub
-		
+		addToInternalLinks(link);
+		if (isDoneAsking()) {
+			if (parent == null) {
+				// I'm root node
+				if (isTermination()) {
+					whenTermination();
+				}
+				else {
+					fireLetUsMerge(new LetUsMerge(new City(getCity()), uuid), new Runnable() {
+						
+						// when on fringe
+						@Override
+						public void run() {
+							unblockLetUsMerge(new Yield<LetUsMerge>() {
+
+								@Override
+								public boolean yieldMsg(LetUsMerge blockedMsg, Link link, Iterator<LetUsMerge> it) {
+									if (isFriendlyMerge(blockedMsg, link)) {
+										it.remove();
+										whenFriendlyMerge(blockedMsg, link);
+										return false;
+									}
+									return true;
+								}
+							});
+						}
+					});
+				}
+			}
+			else {
+				// I'm non root node
+				mySendTo(parent, new MinLinkWeight(minWeight == null ? INF_WEIGHT : minWeight));
+			}
+		}
+		else {
+			fireNextAreYouOutside(null, null);
+		}
 	}
 
 	@Override
@@ -130,14 +201,48 @@ public class MmNodeV2 extends MmHelperNode {
 
 	@Override
 	public void onMinLinkWeight(MinLinkWeight msg, Link link) {
-		// TODO Auto-generated method stub
+		super.onMinLinkWeight(msg, link);
+		updateLinkWithMinWeight(link, msg.getMinWeight());
+		if (! isDoneAsking()) {
+			// wait for other MinLinkWeight and/or External
+			return;
+		}
 		
+		if (parent == null) {
+			if (isTermination()) {
+				whenTermination();
+			}
+			else {
+				fireLetUsMerge(new LetUsMerge(new City(getCity()), uuid), new Runnable() {
+					
+					// when on fringe
+					@Override
+					public void run() {
+						// unblock "Let's merge" -- MUST be friendly merge
+						unblockLetUsMerge(new Yield<LetUsMerge>() {
+
+							@Override
+							public boolean yieldMsg(LetUsMerge blockedMsg, Link link, Iterator<LetUsMerge> it) {
+								if (isFriendlyMerge(blockedMsg, link)) {
+									it.remove();
+									whenFriendlyMerge(blockedMsg, link);
+									return false;
+								}
+								return true;
+							}
+						});
+					}
+				});
+			}
+		}
+		else {
+			mySendTo(parent, new MinLinkWeight(minWeight));
+		}
 	}
 
 	@Override
 	public void onTermination(Termination msg, Link link) {
-		// TODO Auto-generated method stub
-		
+		whenTermination();
 	}
 
 }
