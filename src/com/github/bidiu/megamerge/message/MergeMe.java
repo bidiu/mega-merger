@@ -12,10 +12,6 @@ public class MergeMe extends AbstractMsgContent {
 	
 	private boolean toAskMinWeight;
 	
-	public MergeMe(City mergeTo) {
-		this(mergeTo, false);
-	}
-	
 	public MergeMe(City mergeTo, boolean toAskMinWeight) {
 		this.mergeTo = mergeTo;
 		this.toAskMinWeight = toAskMinWeight;
