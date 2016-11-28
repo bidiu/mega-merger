@@ -17,9 +17,6 @@ import jbotsim.ui.JViewer;
 /**
  * algorithm bootstrap class
  * 
- * TODO use width to represent tree links
- * TODO restart support
- * 
  * Constraints:
  * 1. Every time a message sent, it has to be copied
  * 2. Message.equals MUST compare address
