@@ -24,13 +24,11 @@ import com.github.bidiu.megamerge.message.MinLinkWeight;
 import jbotsim.Link;
 
 /**
- * Bugs:
- * 0. analyze console
- * 1. blocked let's-merge now is friendly merge
- * 
+ * @deprecated This class is deprecated, please check {@link MmNodeV2} instead.
  * @author sunhe
  * @date Nov 22, 2016
  */
+@Deprecated
 public class MmNode extends AbstractNode {
 	
 	public static final String LINK = "LINK";
