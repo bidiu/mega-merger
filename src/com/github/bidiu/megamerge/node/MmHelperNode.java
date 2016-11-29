@@ -311,4 +311,36 @@ public abstract class MmHelperNode extends AbstractNode {
 		weightCounter++;
 	}
 	
+	
+	//////////////////////////////
+	//////////////////////////////
+	
+	
+	// TODO drop, debug
+	@Override
+	public void onPreClock() {
+		if (containsRepetitive(internalLinks)) {
+			System.err.println("internal links of " + this + ": " + internalLinks);
+		}
+		if (containsRepetitive(children)) {
+			System.err.println("children of " + this + ": " + children);
+		}
+		if (internalLinks.size() != children.size() + (parent == null ? 0 : 1)) {
+			throw new IllegalStateException();
+		}
+	}
+	
+	// TODO drop, debug
+	private boolean containsRepetitive(List<? extends Object> list) {
+		for (int i = 0; i < list.size(); i++) {
+			Object ele = list.get(i);
+			for (int j = i+1; j < list.size(); j++) {
+				if (ele.equals(list.get(j))) {
+					return true;
+				}
+			}
+		}
+		return false; 
+	}
+	
 }
