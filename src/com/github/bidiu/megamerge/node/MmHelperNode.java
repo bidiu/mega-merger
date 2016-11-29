@@ -220,7 +220,69 @@ public abstract class MmHelperNode extends AbstractNode {
 	}
 	
 	protected void whenMergeMe(MergeMe receivedMsg, Link link) {
-		// TODO
+		link.setWidth(TREE_PATH_WIDTH);
+		City newCity = receivedMsg.getMergeTo();
+		setCity(newCity);
+		addToInternalLinks(link);
+		if (parent != null) {
+			children.add(parent);
+		}
+		parent = getOppositeNode(link);
+		resetMeta();
+		
+		// notification of merging into another city
+		for (MmNodeV2 child : children) {
+			mySendTo(child, new Notification(new City(newCity), receivedMsg.isToAskMinWeight()));
+		}
+		
+		// unblock "Let's merge" -- MUST be merge me
+		unblockLetUsMerge(new Yield<LetUsMerge>() {
+
+			@Override
+			public boolean yieldMsg(LetUsMerge blockedMsg, Link link, Iterator<LetUsMerge> it) {
+				if (newCity.getLevel() > blockedMsg.getFromCity().getLevel()) {
+					it.remove();
+					// Note, isToAskMinWeight here
+					mySendThrough(link, new MergeMe(newCity, receivedMsg.isToAskMinWeight()));
+					children.add(getOppositeNode(link));
+					addToInternalLinks(link, true);
+				}
+				return true;
+			}
+		});
+		
+		// unblock "Are you outside?" messages if possible
+		unblockAreYouOutside(new Yield<AreYouOutside>() {
+
+			// FIXME double check
+			@Override
+			public boolean yieldMsg(AreYouOutside blockedMsg, Link link, Iterator<AreYouOutside> it) {
+				if (newCity.equals(blockedMsg.getFromCity())) {
+					it.remove();
+					mySendThrough(link, new Internal());
+					addToInternalLinks(link);
+				}
+				else if (newCity.getLevel() >= blockedMsg.getFromCity().getLevel()) {
+					it.remove();
+					mySendThrough(link, new External());
+				}
+				return true;
+			}
+		});
+		
+		// ask minWeight of new round if needed
+		if (receivedMsg.isToAskMinWeight()) {
+			fireNextAreYouOutside(new Runnable() {
+				
+				// when there's no external link
+				@Override
+				public void run() {
+					if (isDoneAsking()) {
+						mySendTo(parent, new MinLinkWeight(INF_WEIGHT));
+					}
+				}
+			}, null);
+		}
 	}
 	
 	protected void whenFriendlyMerge(LetUsMerge receivedMsg, Link link) {
@@ -316,7 +378,7 @@ public abstract class MmHelperNode extends AbstractNode {
 	//////////////////////////////
 	
 	
-	// TODO drop, debug
+	// FIXME drop, debug
 	@Override
 	public void onPreClock() {
 		if (containsRepetitive(internalLinks)) {
@@ -330,7 +392,7 @@ public abstract class MmHelperNode extends AbstractNode {
 		}
 	}
 	
-	// TODO drop, debug
+	// FIXME drop, debug
 	private boolean containsRepetitive(List<? extends Object> list) {
 		for (int i = 0; i < list.size(); i++) {
 			Object ele = list.get(i);
