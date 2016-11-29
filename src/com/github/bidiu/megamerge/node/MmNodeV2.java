@@ -176,7 +176,10 @@ public class MmNodeV2 extends MmHelperNode {
 			whenFriendlyMerge(msg, link);
 		}
 		else if (myCity.getLevel() > senderCity.getLevel()) {
-			// TODO merge to me
+			// merge me
+			mySendThrough(link, new MergeMe(new City(myCity), ! isDoneAsking()));
+			children.add(getOppositeNode(link));
+			addToInternalLinks(link, true);
 		}
 		else if (myCity.getLevel() == senderCity.getLevel()) {
 			// block "Let's merge" message
@@ -189,14 +192,79 @@ public class MmNodeV2 extends MmHelperNode {
 
 	@Override
 	public void onMergeMe(MergeMe msg, Link link) {
-		// TODO Auto-generated method stub
-		
+		whenMergeMe(msg, link);
 	}
 
 	@Override
 	public void onNotification(Notification msg, Link link) {
-		// TODO Auto-generated method stub
+		City newCity = msg.getNewCity();
+		setCity(newCity);
 		
+		// FIXME test, flip links
+		MmNodeV2 oppositeNode = getOppositeNode(link);
+		if (children.contains(oppositeNode)) {
+			if (parent != null) {
+				children.add(parent);
+			}
+			parent = oppositeNode;
+			children.remove(oppositeNode);
+		}
+		
+		// replay notification to children
+		for (MmNodeV2 child : children) {
+			mySendTo(child, msg);
+		}
+		
+		resetMeta();
+		
+		// unblock "let's merge" -- MUST be Merge Me
+		unblockLetUsMerge(new Yield<LetUsMerge>() {
+
+			@Override
+			public boolean yieldMsg(LetUsMerge blockedMsg, Link link, Iterator<LetUsMerge> it) {
+				if (newCity.getLevel() > blockedMsg.getFromCity().getLevel()) {
+					it.remove();
+					// Note, isToAskMinWeight here
+					mySendThrough(link, new MergeMe(newCity, msg.isToAskMinWeight()));
+					children.add(getOppositeNode(link));
+					addToInternalLinks(link, true);
+				}
+				return true;
+			}
+		});
+		
+		// unblock "Are you outside?" if possible
+		unblockAreYouOutside(new Yield<AreYouOutside>() {
+
+			// FIXME double check
+			@Override
+			public boolean yieldMsg(AreYouOutside blockedMsg, Link link, Iterator<AreYouOutside> it) {
+				if (newCity.equals(blockedMsg.getFromCity())) {
+					it.remove();
+					mySendThrough(link, new Internal());
+					addToInternalLinks(link);
+				}
+				else if (newCity.getLevel() >= blockedMsg.getFromCity().getLevel()) {
+					it.remove();
+					mySendThrough(link, new External());
+				}
+				return true;
+			}
+		});
+		
+		// ask minWeight of new round if needed
+		if (msg.isToAskMinWeight()) {
+			fireNextAreYouOutside(new Runnable() {
+				
+				// when there's no external link
+				@Override
+				public void run() {
+					if (isDoneAsking()) {
+						mySendTo(parent, new MinLinkWeight(INF_WEIGHT));
+					}
+				}
+			}, null);
+		}
 	}
 
 	@Override

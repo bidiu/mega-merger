@@ -12,6 +12,7 @@ import java.util.List;
 import com.github.bidiu.megamerge.common.City;
 import com.github.bidiu.megamerge.message.AreYouOutside;
 import com.github.bidiu.megamerge.message.External;
+import com.github.bidiu.megamerge.message.Internal;
 import com.github.bidiu.megamerge.message.LetUsMerge;
 import com.github.bidiu.megamerge.message.MergeMe;
 import com.github.bidiu.megamerge.message.MinLinkWeight;
@@ -65,7 +66,7 @@ public abstract class MmHelperNode extends AbstractNode {
 		return externalLinks;
 	}
 	
-	private void resetMeta() {
+	protected void resetMeta() {
 		weightCounter = 0;
 		linkWithMinWeight = null;
 		linkTryingToMerge = null;
@@ -218,6 +219,10 @@ public abstract class MmHelperNode extends AbstractNode {
 		return myLevel == senderLevel && linkTryingToMerge != null && link.equals(linkTryingToMerge);
 	}
 	
+	protected void whenMergeMe(MergeMe receivedMsg, Link link) {
+		// TODO
+	}
+	
 	protected void whenFriendlyMerge(LetUsMerge receivedMsg, Link link) {
 		link.setWidth(TREE_PATH_WIDTH);
 		MmNodeV2 oppositeNode = getOppositeNode(link);
@@ -273,9 +278,15 @@ public abstract class MmHelperNode extends AbstractNode {
 		// unblock "Are you outside?"
 		unblockAreYouOutside(new Yield<AreYouOutside>() {
 
+			// FIXME double check
 			@Override
 			public boolean yieldMsg(AreYouOutside blockedMsg, Link link, Iterator<AreYouOutside> it) {
-				if (myLevel >= blockedMsg.getFromCity().getLevel()) {
+				if (newCity.equals(blockedMsg.getFromCity())) {
+					it.remove();
+					mySendThrough(link, new Internal());
+					addToInternalLinks(link);
+				}
+				else if (myLevel >= blockedMsg.getFromCity().getLevel()) {
 					it.remove();
 					mySendThrough(link, new External());
 				}
@@ -288,8 +299,8 @@ public abstract class MmHelperNode extends AbstractNode {
 			
 			@Override
 			public void run() {
-				if (parent != null && children.isEmpty()) {
-					mySendTo(parent, INF_WEIGHT);
+				if (parent != null && isDoneAsking()) {
+					mySendTo(parent, new MinLinkWeight(INF_WEIGHT));
 				}
 			}
 		}, null);
