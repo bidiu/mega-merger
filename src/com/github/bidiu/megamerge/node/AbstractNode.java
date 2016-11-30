@@ -97,7 +97,7 @@ public abstract class AbstractNode extends Node {
 	public Message myReceiveMsg(Message msg) {
 		Node sender = msg.getSender();
 		Link link = getCommonLinkWith(sender);
-		logger.error(this, "receive message from node (ID: " + sender + "): " + msg.getContent());
+		logger.log(this, "receive message from node (ID: " + sender + "): " + msg.getContent());
 		((MessageManager) link.getProperty(MSG_MANAGER)).receiveMsg(msg);
 		return msg;
 	}

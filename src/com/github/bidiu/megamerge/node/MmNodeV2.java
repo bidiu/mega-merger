@@ -17,8 +17,7 @@ import com.github.bidiu.megamerge.message.Termination;
 import jbotsim.Link;
 
 /**
- * Notes:
- * 1.Unblock "Are you outside" only when level changes
+ * MegaMerger Node
  * 
  * @author sunhe
  * @date Nov 26, 2016

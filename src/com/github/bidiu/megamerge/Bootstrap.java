@@ -17,18 +17,13 @@ import jbotsim.ui.JViewer;
 /**
  * algorithm bootstrap class
  * 
- * Constraints:
- * 1. Every time a message sent, it has to be copied
- * 2. Message.equals MUST compare address
- * 3. When call JBotsim's send API, wrapper Message class is copied when receiving.
- * 
  * @author sunhe
  * @date Nov 20, 2016
  */
 public class Bootstrap implements SelectionListener, ConnectivityListener {
 	
 	/** in millisecond */
-	public static final int CLOCK_INTERVAL = 500;
+	public static final int CLOCK_INTERVAL = 700;
 	public static final int WINDOW_SIZE_X = 640;
 	public static final int WINDOW_SIZE_Y = 400;
 	public static final String MSG_MANAGER = "MSG_MANAGER";
@@ -43,7 +38,6 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	public static void main(String[] args) {
 		startTime = System.currentTimeMillis();
 		logger = new Logger(startTime);
-		// FIXME
 		Bootstrap listener = new Bootstrap();
 		
 		t = new Topology(WINDOW_SIZE_X, WINDOW_SIZE_Y);

@@ -57,8 +57,6 @@ public abstract class MmHelperNode extends AbstractNode {
 	private List<AreYouOutside> blockedAreYouOutside = new LinkedList<>();
 	private List<LetUsMerge> blockedLetUsMerge = new LinkedList<>();
 	
-	//////////////////////////////
-	//////////////////////////////
 	
 	private List<Link> getExternalLinks() {
 		List<Link> externalLinks = getLinks();
@@ -77,9 +75,6 @@ public abstract class MmHelperNode extends AbstractNode {
 	protected MmNodeV2 getOppositeNode(Link link) {
 		return (MmNodeV2) link.getOtherEndpoint(this);
 	}
-	
-	//////////////////////////////
-	//////////////////////////////
 	
 	protected boolean isTermination() {
 		if (parent != null) new IllegalStateException("non-root node cannot invoke this method");
@@ -371,39 +366,6 @@ public abstract class MmHelperNode extends AbstractNode {
 	@Override
 	public void onMinLinkWeight(MinLinkWeight msg, Link link) {
 		weightCounter++;
-	}
-	
-	
-	//////////////////////////////
-	//////////////////////////////
-	
-	
-	// FIXME drop, debug
-	@Override
-	public void onPreClock() {
-		if (containsRepetitive(internalLinks)) {
-			System.err.println("internal links of " + this + ": " + internalLinks);
-		}
-		if (containsRepetitive(children)) {
-			System.err.println("children of " + this + ": " + children);
-		}
-//		if (internalLinks.size() != children.size() + (parent == null ? 0 : 1)) {
-//			throw new IllegalStateException(String.format("[%s...] internal links: %d, neighbors: %d", 
-//					uuid.substring(0, 6), internalLinks.size(), children.size() + (parent == null ? 0 : 1)));
-//		}
-	}
-	
-	// FIXME drop, debug
-	private boolean containsRepetitive(List<? extends Object> list) {
-		for (int i = 0; i < list.size(); i++) {
-			Object ele = list.get(i);
-			for (int j = i+1; j < list.size(); j++) {
-				if (ele.equals(list.get(j))) {
-					return true;
-				}
-			}
-		}
-		return false; 
 	}
 	
 }
