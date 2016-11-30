@@ -288,9 +288,9 @@ public abstract class MmHelperNode extends AbstractNode {
 	protected void whenFriendlyMerge(LetUsMerge receivedMsg, Link link) {
 		link.setWidth(TREE_PATH_WIDTH);
 		MmNodeV2 oppositeNode = getOppositeNode(link);
-		int myLevel = getCity().getLevel();
+		int myLevel = getCity().getLevel() + 1;
 		String weight = (String) link.getProperty(WEIGHT);
-		City newCity = new City(weight, myLevel+1, ColorUtils.random(HashUtils.sToL(weight)));
+		City newCity = new City(weight, myLevel, ColorUtils.random(HashUtils.sToL(weight)));
 		String senderUuid = receivedMsg.getUuid();
 		
 		if (uuid.compareTo(senderUuid) < 0) {
@@ -387,9 +387,10 @@ public abstract class MmHelperNode extends AbstractNode {
 		if (containsRepetitive(children)) {
 			System.err.println("children of " + this + ": " + children);
 		}
-		if (internalLinks.size() != children.size() + (parent == null ? 0 : 1)) {
-			throw new IllegalStateException();
-		}
+//		if (internalLinks.size() != children.size() + (parent == null ? 0 : 1)) {
+//			throw new IllegalStateException(String.format("[%s...] internal links: %d, neighbors: %d", 
+//					uuid.substring(0, 6), internalLinks.size(), children.size() + (parent == null ? 0 : 1)));
+//		}
 	}
 	
 	// FIXME drop, debug
