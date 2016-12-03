@@ -3,7 +3,7 @@ package com.github.bidiu.megamerge.common;
 import static com.github.bidiu.megamerge.Bootstrap.logger;
 
 import com.github.bidiu.megamerge.node.AbstractNode;
-import com.github.bidiu.megamerge.node.MmNodeV2;
+import com.github.bidiu.megamerge.node.MmNode;
 
 import jbotsim.Node;
 import jbotsim.Topology;
@@ -53,7 +53,7 @@ public class ComplexityManager implements ClockListener {
 	private boolean isTerminated() {
 		for (Node node : t.getNodes()) {
 			if (node instanceof AbstractNode) {
-				City city = ((MmNodeV2) node).getCity();
+				City city = ((MmNode) node).getCity();
 				if (!city.equals(City.ELECTED) && !city.equals(City.NON_ELECTED)) {
 					return false;
 				}

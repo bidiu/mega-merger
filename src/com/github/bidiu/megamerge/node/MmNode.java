@@ -22,7 +22,7 @@ import jbotsim.Link;
  * @author sunhe
  * @date Nov 26, 2016
  */
-public class MmNodeV2 extends MmHelperNode {
+public class MmNode extends MmHelperNode {
 
 	// done
 	@Override
@@ -200,7 +200,7 @@ public class MmNodeV2 extends MmHelperNode {
 		setCity(newCity);
 		
 		// FIXME test, flip links
-		MmNodeV2 oppositeNode = getOppositeNode(link);
+		MmNode oppositeNode = getOppositeNode(link);
 		if (children.contains(oppositeNode)) {
 			if (parent != null) {
 				children.add(parent);
@@ -210,7 +210,7 @@ public class MmNodeV2 extends MmHelperNode {
 		}
 		
 		// replay notification to children
-		for (MmNodeV2 child : children) {
+		for (MmNode child : children) {
 			mySendTo(child, msg);
 		}
 		

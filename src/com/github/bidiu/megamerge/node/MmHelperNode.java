@@ -42,8 +42,8 @@ public abstract class MmHelperNode extends AbstractNode {
 	private static final String LINK = "LINK";
 	
 	
-	protected MmNodeV2 parent;
-	protected List<MmNodeV2> children = new LinkedList<>();
+	protected MmNode parent;
+	protected List<MmNode> children = new LinkedList<>();
 	
 	private List<Link> internalLinks = new LinkedList<>();
 	private Link linkTryingToMerge;
@@ -72,8 +72,8 @@ public abstract class MmHelperNode extends AbstractNode {
 		minWeight = null;
 	}
 	
-	protected MmNodeV2 getOppositeNode(Link link) {
-		return (MmNodeV2) link.getOtherEndpoint(this);
+	protected MmNode getOppositeNode(Link link) {
+		return (MmNode) link.getOtherEndpoint(this);
 	}
 	
 	protected boolean isTermination() {
@@ -89,7 +89,7 @@ public abstract class MmHelperNode extends AbstractNode {
 	
 	protected void whenTermination() {
 		setCity(parent == null ? City.ELECTED : City.NON_ELECTED);
-		for (MmNodeV2 child : children) {
+		for (MmNode child : children) {
 			mySendTo(child, new Termination());
 		}
 	}
@@ -226,7 +226,7 @@ public abstract class MmHelperNode extends AbstractNode {
 		resetMeta();
 		
 		// notification of merging into another city
-		for (MmNodeV2 child : children) {
+		for (MmNode child : children) {
 			mySendTo(child, new Notification(new City(newCity), receivedMsg.isToAskMinWeight()));
 		}
 		
@@ -282,7 +282,7 @@ public abstract class MmHelperNode extends AbstractNode {
 	
 	protected void whenFriendlyMerge(LetUsMerge receivedMsg, Link link) {
 		link.setWidth(TREE_PATH_WIDTH);
-		MmNodeV2 oppositeNode = getOppositeNode(link);
+		MmNode oppositeNode = getOppositeNode(link);
 		int myLevel = getCity().getLevel() + 1;
 		String weight = (String) link.getProperty(WEIGHT);
 		City newCity = new City(weight, myLevel, ColorUtils.random(HashUtils.sToL(weight)));
