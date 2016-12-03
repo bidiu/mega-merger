@@ -40,6 +40,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	public static void main(String[] args) {
 		startTime = System.currentTimeMillis();
 		logger = new Logger(startTime);
+		printDirections();
 		Bootstrap listener = new Bootstrap();
 		
 		t = new Topology(WINDOW_SIZE_X, WINDOW_SIZE_Y);
@@ -69,6 +70,14 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 		JViewer window = new JViewer(t);
 		window.getJTopology().setLinkPainter(new MyLinkPainter());
 		window.setTitle("He Sun - Mega Merge Algorithm");
+	}
+	
+	public static void printDirections() {
+		logger.log("Directions");
+		logger.log("1. Click left mouse button to add nodes on canvas.");
+		logger.log("2. When two nodes are close enough to each other, there will a link between them.");
+		logger.log("3. You can drag any node to a different position.");
+		logger.log("4. Click middle (scroll) button on any node to start the algorithm");
 	}
 
 	/*
