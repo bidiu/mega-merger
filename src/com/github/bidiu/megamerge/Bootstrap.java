@@ -25,8 +25,8 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	
 	/** in millisecond */
 	public static final int CLOCK_INTERVAL = 700;
-	public static final int WINDOW_SIZE_X = 640;
-	public static final int WINDOW_SIZE_Y = 400;
+	public static final int WINDOW_SIZE_X = 480;
+	public static final int WINDOW_SIZE_Y = 300;
 	public static final String MSG_MANAGER = "MSG_MANAGER";
 	public static final String WEIGHT = "WEIGHT";
 	
