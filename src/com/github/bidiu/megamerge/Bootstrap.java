@@ -1,5 +1,6 @@
 package com.github.bidiu.megamerge;
 
+import com.github.bidiu.megamerge.common.ComplexityManager;
 import com.github.bidiu.megamerge.common.LinkMessageManager;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
@@ -59,6 +60,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 				dummyNode.move();
 			}
 		});
+		t.addClockListener(ComplexityManager.getInstance().init(t));
 		t.setClockSpeed(CLOCK_INTERVAL);
 		t.pause();
 		
@@ -75,6 +77,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 		if (! started) {
 			logger.log("algorithm starts");
 			started = true;
+			ComplexityManager.getInstance().start();
 			t.resume();
 		}
 	}

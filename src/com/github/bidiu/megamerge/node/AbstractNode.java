@@ -6,6 +6,7 @@ import static com.github.bidiu.megamerge.Bootstrap.logger;
 import java.util.UUID;
 
 import com.github.bidiu.megamerge.common.City;
+import com.github.bidiu.megamerge.common.ComplexityManager;
 import com.github.bidiu.megamerge.common.MessageManager;
 import com.github.bidiu.megamerge.message.AreYouOutside;
 import com.github.bidiu.megamerge.message.External;
@@ -89,6 +90,7 @@ public abstract class AbstractNode extends Node {
 	
 	public void mySendTo(Node node, Message msg) {
 		logger.log(this, "send message to node (ID: " + node + "): " + msg.getContent());
+		ComplexityManager.getInstance().messageSent();
 		Link link = getCommonLinkWith(node);
 		((MessageManager) link.getProperty(MSG_MANAGER)).addMsgToNode(node, msg);
 		send(node, msg);
