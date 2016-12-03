@@ -3,6 +3,7 @@ package com.github.bidiu.megamerge;
 import com.github.bidiu.megamerge.common.ComplexityManager;
 import com.github.bidiu.megamerge.common.LinkMessageManager;
 import com.github.bidiu.megamerge.common.MessageManager;
+import com.github.bidiu.megamerge.common.MyLinkResolver;
 import com.github.bidiu.megamerge.graphics.MyLinkPainter;
 import com.github.bidiu.megamerge.node.MmNode;
 import com.github.bidiu.megamerge.util.Logger;
@@ -43,6 +44,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 		
 		t = new Topology(WINDOW_SIZE_X, WINDOW_SIZE_Y);
 		t.setDefaultNodeModel(MmNode.class);
+		t.setLinkResolver(new MyLinkResolver());
 		t.addSelectionListener(listener);
 		t.addConnectivityListener(listener);
 		// force redraw call every clock by moving an invisible node
