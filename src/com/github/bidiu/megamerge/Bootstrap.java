@@ -33,9 +33,9 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 	
 	public static Logger logger;
 	
-	private static long startTime;
-	private static boolean started = false;
-	private static Topology t;
+	protected static long startTime;
+	protected static boolean started = false;
+	protected static Topology t;
 	
 	public static void main(String[] args) {
 		startTime = System.currentTimeMillis();
