@@ -98,12 +98,24 @@ public class ComplexityManager implements ClockListener {
 		if (done) {
 			logger.error("Nodes: " + (t.getNodes().size() - 1));
 			logger.error("Links: " + t.getLinks().size());
+			logger.error("Average Degree: " + getAverageDegree());
 			logger.error("Time Complexity: " + clockCnt);
 			logger.error("Message Complexity: " + msgCnt);
 		}
 		else if (started) {
 			clockCnt++;
 		}
+	}
+	
+	private int getAverageDegree() {
+		int totalDegree = 0;
+		
+		for (Node node : t.getNodes()) {
+			if (node instanceof AbstractNode) {
+				totalDegree += node.getLinks().size();
+			}
+		}
+		return (int) Math.round((double) totalDegree / (t.getNodes().size()-1));
 	}
 	
 }

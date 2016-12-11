@@ -58,7 +58,8 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 				if (dummyNode == null) {
 					dummyNode = new Node();
 					dummyNode.setDirection(-0.75 * Math.PI);
-					t.addNode(-100.0, 100.0, dummyNode);
+					dummyNode.setLocation(-4000.0, -4000.0);
+					t.addNode(dummyNode);
 				}
 				dummyNode.move();
 			}
