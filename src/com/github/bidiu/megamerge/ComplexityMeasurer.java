@@ -49,7 +49,7 @@ public class ComplexityMeasurer extends Bootstrap {
 		t.addClockListener(ComplexityManager.getInstance().init(t));
 		t.setClockSpeed(CLOCK_INTERVAL);
 		t.pause();
-		new RandomNetworkBuilder(250, 250, t).build(t, 10);
+		new RandomNetworkBuilder(200, 200, t).build(t, 10);
 		
 		JViewer window = new JViewer(t);
 		window.getJTopology().setLinkPainter(new MyLinkPainter());

@@ -96,6 +96,8 @@ public class ComplexityManager implements ClockListener {
 		if (!started && done) throw new IllegalStateException();
 		
 		if (done) {
+			logger.error("Nodes: " + (t.getNodes().size() - 1));
+			logger.error("Links: " + t.getLinks().size());
 			logger.error("Time Complexity: " + clockCnt);
 			logger.error("Message Complexity: " + msgCnt);
 		}
