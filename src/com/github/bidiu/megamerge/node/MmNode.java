@@ -22,7 +22,7 @@ import jbotsim.Link;
  * @author sunhe
  * @date Nov 26, 2016
  */
-public class MmNode extends MmHelperNode {
+public class MmNode extends AbstractMmNode {
 
 	// done
 	@Override

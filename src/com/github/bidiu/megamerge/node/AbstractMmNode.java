@@ -24,10 +24,12 @@ import com.github.bidiu.megamerge.util.HashUtils;
 import jbotsim.Link;
 
 /**
+ * This is a superclass of {@link MmNode}.
+ * 
  * @author sunhe
  * @date Nov 25, 2016
  */
-public abstract class MmHelperNode extends AbstractNode {
+public abstract class AbstractMmNode extends AbstractNode {
 	
 	public static interface Yield<T> {
 		/**
