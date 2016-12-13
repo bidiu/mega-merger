@@ -4,6 +4,7 @@ import static com.github.bidiu.megamerge.Bootstrap.logger;
 
 import com.github.bidiu.megamerge.node.AbstractNode;
 import com.github.bidiu.megamerge.node.MmNode;
+import com.github.bidiu.megamerge.util.TheoreticalComplexityCalculator;
 
 import jbotsim.Node;
 import jbotsim.Topology;
@@ -96,11 +97,20 @@ public class ComplexityManager implements ClockListener {
 		if (!started && done) throw new IllegalStateException();
 		
 		if (done) {
-			logger.error("Nodes: " + (t.getNodes().size() - 1));
-			logger.error("Links: " + t.getLinks().size());
+			int n = t.getNodes().size() - 1;
+			int m = t.getLinks().size();
+			int useless = 2 * (m - (n - 1));
+			int theoretical = TheoreticalComplexityCalculator.calculate(n, m);
+			
+			logger.error("Nodes: " + n);
+			logger.error("Links: " + m);
 			logger.error("Average Degree: " + getAverageDegree());
 			logger.error("Time Complexity: " + clockCnt);
-			logger.error("Message Complexity: " + msgCnt);
+			System.err.println();
+			logger.error(String.format("Real Message Complexity: %d (useless: %d, useful: %d)", 
+					msgCnt, useless, msgCnt - useless));
+			logger.error(String.format("Theoretical Message Complexity: %d (useless: %d, useful: %d)", 
+					theoretical, useless, theoretical - useless));
 		}
 		else if (started) {
 			clockCnt++;
