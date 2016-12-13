@@ -69,7 +69,7 @@ public class ComplexityMeasurer extends Bootstrap {
 	
 	public static void printDirections() {
 		logger.log("Directions");
-		logger.log("1. Click middle (scroll) button on any node to start the algorithm");
+		logger.log("1. Click middle (scroll) mouse button on any node to start the algorithm");
 	}
 	
 }

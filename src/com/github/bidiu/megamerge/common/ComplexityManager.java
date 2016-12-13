@@ -11,7 +11,7 @@ import jbotsim.Topology;
 import jbotsim.event.ClockListener;
 
 /**
- * Time complexity manager
+ * Message complexity manager
  * <p/>
  * Thread-safe.
  * <p/>
@@ -106,7 +106,7 @@ public class ComplexityManager implements ClockListener {
 			logger.error("Links: " + m);
 			logger.error("Average Degree: " + getAverageDegree());
 			logger.error("Time Complexity: " + clockCnt);
-			System.err.println();
+			System.err.println("======================================================================");
 			logger.error(String.format("Real Message Complexity: %d (useless: %d, useful: %d)", 
 					msgCnt, useless, msgCnt - useless));
 			logger.error(String.format("Theoretical Message Complexity: %d (useless: %d, useful: %d)", 

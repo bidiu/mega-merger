@@ -78,7 +78,7 @@ public class Bootstrap implements SelectionListener, ConnectivityListener {
 		logger.log("1. Click left mouse button to add nodes on canvas.");
 		logger.log("2. When two nodes are close enough to each other, there will a link between them.");
 		logger.log("3. You can drag any node to a different position.");
-		logger.log("4. Click middle (scroll) button on any node to start the algorithm");
+		logger.log("4. Click middle (scroll) mouse button on any node to start the algorithm");
 	}
 
 	/*
