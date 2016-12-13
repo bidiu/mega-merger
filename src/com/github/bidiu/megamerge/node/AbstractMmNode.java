@@ -51,6 +51,7 @@ public abstract class AbstractMmNode extends AbstractNode {
 	private Link linkTryingToMerge;
 	
 	protected Link linkWithMinWeight;
+	protected Link linkAskingOutside;
 	protected String minWeight;
 	
 	private int weightCounter;
@@ -109,6 +110,7 @@ public abstract class AbstractMmNode extends AbstractNode {
 	@Override
 	public void onExternal(External msg, Link link) {
 		externalRecevied = true;
+		linkAskingOutside = null;
 	}
 	
 	/**
@@ -146,6 +148,7 @@ public abstract class AbstractMmNode extends AbstractNode {
 				}
 			});
 			mySendThrough(nextLink, new AreYouOutside(new City(getCity())));
+			linkAskingOutside = nextLink;
 			// execute callback
 			if (afterAsking != null) afterAsking.run();
 		}

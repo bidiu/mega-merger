@@ -44,10 +44,15 @@ public class MmNode extends AbstractMmNode {
 		City senderCity = msg.getFromCity();
 		City myCity = getCity();
 		if (myCity.getName().equals(senderCity.getName())) {
-			// same city
-			// so internal
-			mySendThrough(link, new Internal());
-			addToInternalLinks(link);
+			// same city, so internal
+			if (linkAskingOutside == null || !link.equals(linkAskingOutside)) {
+				mySendThrough(link, new Internal());
+				addToInternalLinks(link);
+			}
+			else {
+				// just asked each other, and actually same city
+				onInternal(new Internal(), link);
+			}
 		}
 		else if (myCity.getLevel() >= senderCity.getLevel()) {
 			mySendThrough(link, new External());
@@ -100,6 +105,7 @@ public class MmNode extends AbstractMmNode {
 	@Override
 	public void onInternal(Internal msg, Link link) {
 		addToInternalLinks(link);
+		linkAskingOutside = null;
 		if (isDoneAsking()) {
 			if (parent == null) {
 				// I'm root node
